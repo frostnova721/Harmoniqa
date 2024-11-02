@@ -1,4 +1,4 @@
-package com.maxrave.simpmusic
+package app.ice.harmoniqa
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry

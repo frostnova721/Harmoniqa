@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/bottom_navigation_item_search"
-        android:name="com.maxrave.simpmusic.ui.fragment.SearchFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search">
         <action
@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@+id/bottom_navigation_item_library"
-        android:name="com.maxrave.simpmusic.ui.fragment.library.LibraryFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.library.LibraryFragment"
         android:label="fragment_library"
         tools:layout="@layout/fragment_library">
         <action
@@ -62,7 +62,7 @@
     </fragment>
     <fragment
         android:id="@+id/bottom_navigation_item_home"
-        android:name="com.maxrave.simpmusic.ui.fragment.home.HomeFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -83,7 +83,7 @@
     </fragment>
     <fragment
         android:id="@+id/artistFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.other.ArtistFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.other.ArtistFragment"
         android:label="ArtistFragment" />
     <action
         android:id="@+id/action_global_artistFragment"
@@ -94,7 +94,7 @@
         app:popExitAnim="@anim/top_to_bottom" />
     <fragment
         android:id="@+id/albumFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.other.AlbumFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.other.AlbumFragment"
         android:label="AlbumFragment" />
     <action
         android:id="@+id/action_global_albumFragment"
@@ -105,7 +105,7 @@
         app:popExitAnim="@anim/top_to_bottom" />
     <fragment
         android:id="@+id/playlistFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.other.PlaylistFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.other.PlaylistFragment"
         android:label="PlaylistFragment" />
     <action
         android:id="@+id/action_global_playlistFragment"
@@ -117,14 +117,14 @@
 
     <fragment
         android:id="@+id/moodFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.home.MoodFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.home.MoodFragment"
         android:label="MoodFragment" />
     <action
         android:id="@+id/action_global_moodFragment"
         app:destination="@id/moodFragment" />
     <fragment
         android:id="@+id/nowPlayingFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.player.NowPlayingFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.player.NowPlayingFragment"
         android:label="NowPlayingFragment" />
     <action
         android:id="@+id/action_global_nowPlayingFragment"
@@ -134,43 +134,43 @@
         app:popExitAnim="@anim/top_to_bottom" />
     <dialog
         android:id="@+id/queueFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.player.QueueFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.player.QueueFragment"
         android:label="QueueFragment" />
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.library.FavoriteFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.library.FavoriteFragment"
         android:label="fragment_favorite"
         tools:layout="@layout/fragment_favorite" />
     <fragment
         android:id="@+id/followedFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.library.FollowedFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.library.FollowedFragment"
         android:label="fragment_followed"
         tools:layout="@layout/fragment_followed" />
     <fragment
         android:id="@+id/mostPlayedFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.library.MostPlayedFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.library.MostPlayedFragment"
         android:label="MostPlayedFragment" />
     <fragment
         android:id="@+id/recentlySongsFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.home.RecentlySongsFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.home.RecentlySongsFragment"
         android:label="fragment_recently_songs"
         tools:layout="@layout/fragment_recently_songs" />
     <fragment
         android:id="@+id/downloadedFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.library.DownloadedFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.library.DownloadedFragment"
         android:label="fragment_downloaded"
         tools:layout="@layout/fragment_downloaded" />
     <fragment
         android:id="@+id/localPlaylistFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.other.LocalPlaylistFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.other.LocalPlaylistFragment"
         android:label="LocalPlaylistFragment" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.home.SettingsFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.home.SettingsFragment"
         android:label="SettingsFragment" />
     <dialog
         android:id="@+id/infoFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.player.InfoFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.player.InfoFragment"
         android:label="InfoFragment" />
     <action
         android:id="@+id/action_global_bottom_navigation_item_home"
@@ -195,7 +195,7 @@
         app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     <fragment
         android:id="@+id/logInFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.login.LogInFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.login.LogInFragment"
         android:label="fragment_log_in"
         tools:layout="@layout/fragment_log_in" />
     <action
@@ -208,7 +208,7 @@
         app:popUpTo="@id/settingsFragment" />
     <fragment
         android:id="@+id/musixmatchFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.login.MusixmatchFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.login.MusixmatchFragment"
         android:label="MusixmatchFragment" />
     <action
         android:id="@+id/action_global_musixmatchFragment"
@@ -233,7 +233,7 @@
         app:popExitAnim="@anim/top_to_bottom" />
     <fragment
         android:id="@+id/moreAlbumsFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.other.MoreAlbumsFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.other.MoreAlbumsFragment"
         android:label="fragment_more_albums"
         tools:layout="@layout/fragment_more_albums" />
     <action
@@ -245,7 +245,7 @@
         app:popExitAnim="@anim/top_to_bottom" />
     <fragment
         android:id="@+id/creditFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.other.CreditFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.other.CreditFragment"
         android:label="CreditFragment" />
     <action
         android:id="@+id/action_global_creditFragment"
@@ -256,7 +256,7 @@
         app:popExitAnim="@anim/top_to_bottom" />
     <fragment
         android:id="@+id/podcastFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.other.PodcastFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.other.PodcastFragment"
         android:label="PodcastFragment" />
     <action
         android:id="@+id/action_global_podcastFragment"
@@ -267,7 +267,7 @@
         app:popExitAnim="@anim/top_to_bottom" />
     <fragment
         android:id="@+id/fullscreenFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.player.FullscreenFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.player.FullscreenFragment"
         android:label="FullscreenFragment" />
     <action
         android:id="@+id/action_global_fullscreenFragment"
@@ -278,7 +278,7 @@
         app:popExitAnim="@anim/top_to_bottom" />
     <fragment
         android:id="@+id/spotifyLogInFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.login.SpotifyLogInFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.login.SpotifyLogInFragment"
         android:label="SpotifyLogInFragment" />
     <action
         android:id="@+id/action_global_spotifyLogInFragment"
@@ -289,7 +289,7 @@
         app:popExitAnim="@anim/top_to_bottom" />
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.maxrave.simpmusic.ui.fragment.home.NotificationFragment"
+        android:name="app.ice.harmoniqa.ui.fragment.home.NotificationFragment"
         android:label="NotificationFragment">
         <deepLink
             android:id="@+id/deepLink"

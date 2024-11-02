@@ -31,7 +31,7 @@
         </intent>
     </queries>
     <queries>
-        <package android:name="com.maxrave.simpmusic" />
+        <package android:name="app.ice.harmoniqa" />
     </queries>
     <queries>
         <intent>

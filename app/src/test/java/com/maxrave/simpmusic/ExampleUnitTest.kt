@@ -1,4 +1,4 @@
-package com.maxrave.simpmusic
+package app.ice.harmoniqa
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

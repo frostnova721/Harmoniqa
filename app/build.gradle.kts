@@ -10,11 +10,11 @@ plugins {
 }
 
 android {
-    namespace = "com.maxrave.simpmusic"
+    namespace = "app.ice.harmoniqa"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.maxrave.simpmusic"
+        applicationId = "app.ice.harmoniqa"
         minSdk = 26
         targetSdk = 35
         versionCode = 20

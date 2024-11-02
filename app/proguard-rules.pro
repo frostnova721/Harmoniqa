@@ -25,7 +25,7 @@
 -dontwarn kotlinx.serialization.internal.ClassValueReferences
 -keep class com.google.gson.reflect.TypeToken { *; }
 -keep class * extends com.google.gson.reflect.TypeToken
--keep class com.maxrave.simpmusic.data.model.** { *; }
--keep class com.maxrave.simpmusic.extension.AllExtKt { *; }
--keep class com.maxrave.simpmusic.extension.AllExtKt$* { *; }
+-keep class app.ice.harmoniqa.data.model.** { *; }
+-keep class app.ice.harmoniqa.extension.AllExtKt { *; }
+-keep class app.ice.harmoniqa.extension.AllExtKt$* { *; }
 -keep class com.maxrave.kotlinytmusicscraper.extension.MapExtKt$* { *; }

@@ -1,0 +1,20 @@
+package app.ice.harmoniqa.data.model.home.chart
+
+
+import com.google.gson.annotations.SerializedName
+import app.ice.harmoniqa.data.model.searchResult.songs.Thumbnail
+
+data class ItemArtist(
+    @SerializedName("browseId")
+    val browseId: String,
+    @SerializedName("rank")
+    val rank: String,
+    @SerializedName("subscribers")
+    val subscribers: String,
+    @SerializedName("thumbnails")
+    val thumbnails: List<Thumbnail>,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("trend")
+    val trend: String
+)
