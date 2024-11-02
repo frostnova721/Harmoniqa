@@ -5,11 +5,10 @@ import android.content.Context
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.media3.common.util.UnstableApi
-import app.ice.harmoniqa.R
-import cat.ereza.customactivityoncrash.config.CaocConfig
 import app.ice.harmoniqa.di.databaseModule
 import app.ice.harmoniqa.di.mediaServiceModule
 import app.ice.harmoniqa.ui.MainActivity
+import cat.ereza.customactivityoncrash.config.CaocConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.workmanager.koin.workManagerFactory

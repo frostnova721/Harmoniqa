@@ -139,7 +139,8 @@ class CustomRedirectConfig private constructor(
                     }
 
                 call = execute(requestBuilder)
-                if (!call.response.status.isRedirect()) return call
+                println(call.response.status)
+                if (!(call.response.status.isRedirect())) return call
             }
         }
     }

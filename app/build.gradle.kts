@@ -11,12 +11,12 @@ plugins {
 
 android {
     namespace = "app.ice.harmoniqa"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "app.ice.harmoniqa"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 20
         versionName = "1.1.1"
         vectorDrawables.useSupportLibrary = true

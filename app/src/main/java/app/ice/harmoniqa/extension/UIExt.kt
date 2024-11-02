@@ -12,6 +12,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.lazy.LazyListItemInfo
@@ -357,6 +358,30 @@ fun LazyListState.animateScrollAndCentralizeItem(index: Int, scope: CoroutineSco
 }
 @Composable
 fun KeepScreenOn() = AndroidView({ View(it).apply { keepScreenOn = true } })
+
+@Composable
+fun ScrollState.isScrollingUp(): Boolean {
+    var previousScrollPosition by remember { mutableStateOf(this.value) }
+    var previousScrollOffset by remember { mutableStateOf(0) }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { this@isScrollingUp.value }.collect { currentScrollPosition ->
+            previousScrollOffset = previousScrollPosition
+            previousScrollPosition = currentScrollPosition
+        }
+    }
+
+    return remember {
+        derivedStateOf {
+            val currentScrollPosition = this.value
+            if (currentScrollPosition > 0) {
+                previousScrollPosition > currentScrollPosition || previousScrollOffset >= currentScrollPosition
+            } else {
+                false //set this to true to consider being at top as state of scrollin' up
+            }
+        }
+    }.value
+}
 
 @Composable
 fun LazyListState.isScrollingUp(): Boolean {
