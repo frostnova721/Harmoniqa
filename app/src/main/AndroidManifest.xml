@@ -40,7 +40,7 @@
     </queries>
 
     <application
-        android:name=".SimpMusicApplication"
+        android:name=".HarmoniqaApplication"
         android:allowBackup="true"
         android:appCategory="audio"
         android:dataExtractionRules="@xml/data_extraction_rules"

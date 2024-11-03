@@ -116,8 +116,9 @@
     <string name="restore_your_saved_data">Restore your saved data</string>
     <string name="about_us">About us</string>
     <string name="version">Version</string>
+    <string name="version_name" translatable="false">v1.1.1</string>
     <string name="github">Github</string>
-    <string name="maxrave_dev">maxrave-dev</string>
+    <string name="dev" >frostnova</string>
     <string name="buy_me_a_coffee">Buy me a coffee</string>
     <string name="paypal">PayPal</string>
     <string name="title">Title</string>
@@ -155,7 +156,6 @@
     <string name="no_equalizer">Your device doesn\'t have equalizer</string>
     <string name="open_system_equalizer">Open system equalizer</string>
     <string name="use_your_system_equalizer">Use your system equalizer</string>
-    <string name="version_name" translatable="false">v0.2.3-hf2</string>
     <string name="streaming_data_provider_piped">Streaming data provider (Piped)</string>
     <string name="itag">Itag</string>
     <string name="mime_type">Mime Type</string>

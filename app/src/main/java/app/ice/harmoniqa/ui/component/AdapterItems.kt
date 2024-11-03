@@ -750,12 +750,13 @@ fun MoodMomentAndGenreHomeItem(
             .height(50.dp)
             .padding(8.dp)
     ) {
+        val color = remember { generateRandomColor() }
         Row {
             Box(
                 Modifier
                     .width(10.dp)
                     .height(64.dp)
-                    .background(generateRandomColor())
+                    .background(color)
             )
             Text(
                 text = title,

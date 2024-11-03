@@ -16,7 +16,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
-class SimpMusicApplication :
+class HarmoniqaApplication :
     Application(),
     KoinComponent {
     @UnstableApi
@@ -25,7 +25,7 @@ class SimpMusicApplication :
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         startKoin {
             androidLogger(level = Level.DEBUG)
-            androidContext(this@SimpMusicApplication)
+            androidContext(this@HarmoniqaApplication)
             modules(
                 databaseModule,
                 mediaServiceModule,
@@ -62,7 +62,7 @@ class SimpMusicApplication :
     }
 
     companion object {
-        private var instance: SimpMusicApplication? = null
+        private var instance: HarmoniqaApplication? = null
 
         fun applicationContext(): Context = instance!!.applicationContext
     }

@@ -45,6 +45,7 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -168,6 +169,7 @@ fun HomeScreen(
         }
     }
 
+    //returns boolean value to know whether to show app bar or not
     @Composable
     fun showAppBar(): Boolean {
         return scrollState.isScrollingUp() || scrollState.value < 10;
@@ -330,7 +332,6 @@ fun HomeScreen(
                                     ChartTitle()
                                     Spacer(modifier = Modifier.height(5.dp))
                                     Crossfade(targetState = regionChart) { it ->
-                                        Log.w("HomeScreen", "regionChart: $it")
                                         if (it != null) {
                                             DropdownButton(
                                                 items = CHART_SUPPORTED_COUNTRY.itemsData.toList(),
@@ -560,10 +561,8 @@ fun MoodMomentAndGenre(
 ) {
 
     val lazyListState1 = rememberLazyGridState()
-    val snapperFlingBehavior1 = rememberSnapFlingBehavior(SnapLayoutInfoProvider(lazyGridState = lazyListState1))
 
     val lazyListState2 = rememberLazyGridState()
-    val snapperFlingBehavior2 = rememberSnapFlingBehavior(SnapLayoutInfoProvider(lazyGridState = lazyListState2))
 
     Column(
         Modifier
@@ -586,7 +585,6 @@ fun MoodMomentAndGenre(
             rows = GridCells.Fixed(3),
             modifier = Modifier.height(210.dp),
             state = lazyListState1,
-            flingBehavior = snapperFlingBehavior1,
         ) {
             items(mood.moodsMoments) {
                 MoodMomentAndGenreHomeItem(title = it.title) {
@@ -611,7 +609,6 @@ fun MoodMomentAndGenre(
         LazyHorizontalGrid(
             rows = GridCells.Fixed(3), modifier = Modifier.height(210.dp),
             state = lazyListState2,
-            flingBehavior = snapperFlingBehavior2,
         ) {
             items(mood.genres) {
                 MoodMomentAndGenreHomeItem(title = it.title) {

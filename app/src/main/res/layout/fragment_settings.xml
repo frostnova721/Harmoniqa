@@ -1353,7 +1353,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
                         android:id="@+id/tvVersion"
-                        android:text="@string/version_name">
+                        android:text="v1.1.1">
 
                     </TextView>
                 </LinearLayout>
@@ -1407,7 +1407,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
                         android:id="@+id/tvAuthor"
-                        android:text="@string/maxrave_dev">
+                        android:text="@string/dev">
 
                     </TextView>
 
