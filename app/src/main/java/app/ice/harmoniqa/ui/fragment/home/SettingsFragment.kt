@@ -67,8 +67,8 @@ import java.util.Scanner
 
 @UnstableApi
 class SettingsFragment : Fragment() {
-    private var _binding: FragmentSettingsBinding? = null
-    val binding get() = _binding!!
+//    private var _binding: FragmentSettingsBinding? = null
+//    val binding get() = _binding!!
     private val viewModel by activityViewModels<SettingsViewModel>()
     private val sharedViewModel by activityViewModels<SharedViewModel>()
 
@@ -109,7 +109,7 @@ class SettingsFragment : Fragment() {
         viewModel.getLoggedIn()
     }
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
+//    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 
     @OptIn(ExperimentalCoilApi::class)
     @UnstableApi

@@ -120,20 +120,18 @@ fun HomeScreen(
     var accountShow by rememberSaveable {
         mutableStateOf(false)
     }
-    val regionChart by viewModel.regionCodeChart.collectAsState()
+    val regionChart by  viewModel.regionCodeChart.collectAsState()
     val homeRefresh by sharedViewModel.homeRefresh.collectAsState()
-    val pullToRefreshState =
-        rememberPullToRefreshState(
-            70.dp,
-        )
+    val pullToRefreshState = rememberPullToRefreshState(
+        70.dp
+    )
     val chipRowState = rememberScrollState()
     val params by viewModel.params.collectAsState()
-    val scaleFraction =
-        if (pullToRefreshState.isRefreshing) {
-            1f
-        } else {
-            LinearOutSlowInEasing.transform(pullToRefreshState.progress).coerceIn(0f, 1f)
-        }
+    val scaleFraction = if (pullToRefreshState.isRefreshing) {
+        1f
+    } else {
+        LinearOutSlowInEasing.transform(pullToRefreshState.progress).coerceIn(0f, 1f)
+    }
     if (pullToRefreshState.isRefreshing) {
         viewModel.getHomeItemList()
         viewModel.getHomeItemList()
@@ -177,16 +175,12 @@ fun HomeScreen(
 
     Column {
         AnimatedVisibility(
-            visible = showAppBar(),
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically()
+            visible = showAppBar(), enter = fadeIn() + expandVertically(), exit = fadeOut() + shrinkVertically()
         ) {
             HomeTopAppBar(navController)
         }
         AnimatedVisibility(
-            visible = !showAppBar(),
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically()
+            visible = !showAppBar(), enter = fadeIn() + expandVertically(), exit = fadeOut() + shrinkVertically()
         ) {
             Spacer(
                 modifier = Modifier
@@ -204,8 +198,7 @@ fun HomeScreen(
             Config.listOfHomeChip.forEach { id ->
                 Spacer(modifier = Modifier.width(4.dp))
                 Chip(
-                    isSelected =
-                    when (params) {
+                    isSelected = when (params) {
                         Constants.HOME_PARAMS_RELAX -> id == R.string.relax
                         Constants.HOME_PARAMS_SLEEP -> id == R.string.sleep
                         Constants.HOME_PARAMS_ENERGIZE -> id == R.string.energize
@@ -237,15 +230,13 @@ fun HomeScreen(
             }
         }
         Box(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .nestedScroll(pullToRefreshState.nestedScrollConnection)
                 .padding(vertical = 8.dp),
             contentAlignment = Alignment.Center,
         ) {
             PullToRefreshContainer(
-                modifier =
-                Modifier
+                modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(top = 15.dp)
                     .graphicsLayer(scaleX = scaleFraction, scaleY = scaleFraction),
@@ -258,7 +249,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .padding(horizontal = 15.dp)
                             .verticalScroll(scrollState),
-                        ) {
+                    ) {
                         androidx.compose.animation.AnimatedVisibility(
                             visible = accountInfo != null && accountShow,
                         ) {
@@ -269,21 +260,17 @@ fun HomeScreen(
                         }
 
                         androidx.compose.animation.AnimatedVisibility(
-                            visible =
-                            homeData.find {
-                                it.title ==
-                                    context.getString(
-                                        R.string.quick_picks,
-                                    )
+                            visible = homeData.find {
+                                it.title == context.getString(
+                                    R.string.quick_picks,
+                                )
                             } != null,
                         ) {
                             QuickPicks(
-                                homeItem =
-                                homeData.find {
-                                    it.title ==
-                                        context.getString(
-                                            R.string.quick_picks,
-                                        )
+                                homeItem = homeData.find {
+                                    it.title == context.getString(
+                                        R.string.quick_picks,
+                                    )
                                 } ?: return@AnimatedVisibility,
                                 sharedViewModel = sharedViewModel,
                             )
@@ -325,8 +312,7 @@ fun HomeScreen(
                         Crossfade(targetState = chart == null && !chartLoading) { noData ->
                             if (!noData) {
                                 Column(
-                                    Modifier
-                                        .padding(vertical = 10.dp),
+                                    Modifier.padding(vertical = 10.dp),
                                     verticalArrangement = Arrangement.SpaceBetween,
                                 ) {
                                     ChartTitle()
@@ -335,11 +321,9 @@ fun HomeScreen(
                                         if (it != null) {
                                             DropdownButton(
                                                 items = CHART_SUPPORTED_COUNTRY.itemsData.toList(),
-                                                defaultSelected =
-                                                CHART_SUPPORTED_COUNTRY.itemsData.getOrNull(
+                                                defaultSelected = CHART_SUPPORTED_COUNTRY.itemsData.getOrNull(
                                                     CHART_SUPPORTED_COUNTRY.items.indexOf(it),
-                                                )
-                                                    ?: CHART_SUPPORTED_COUNTRY.itemsData[1],
+                                                ) ?: CHART_SUPPORTED_COUNTRY.itemsData[1],
                                             ) {
                                                 viewModel.exploreChart(
                                                     CHART_SUPPORTED_COUNTRY.items[
@@ -367,8 +351,7 @@ fun HomeScreen(
                                             }
                                         } else {
                                             CenterLoadingBox(
-                                                modifier =
-                                                Modifier
+                                                modifier = Modifier
                                                     .fillMaxWidth()
                                                     .height(400.dp),
                                             )
@@ -390,12 +373,11 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTopAppBar(navController: NavController) {
-    val hour =
-        remember {
-            val date = Calendar.getInstance().time
-            val formatter = SimpleDateFormat("HH")
-            formatter.format(date).toInt()
-        }
+    val hour = remember {
+        val date = Calendar.getInstance().time
+        val formatter = SimpleDateFormat("HH")
+        formatter.format(date).toInt()
+    }
     TopAppBar(
         title = {
             Column {
@@ -406,8 +388,7 @@ fun HomeTopAppBar(navController: NavController) {
                     modifier = Modifier.padding(bottom = 4.dp),
                 )
                 Text(
-                    text =
-                    when (hour) {
+                    text = when (hour) {
                         in 6..12 -> {
                             stringResource(R.string.good_morning)
                         }
@@ -464,8 +445,7 @@ fun AccountLayout(
         ) {
             AsyncImage(
                 url, null, contentScale = ContentScale.Crop,
-                modifier =
-                Modifier
+                modifier = Modifier
                     .size(40.dp)
                     .clip(
                         CircleShape,
@@ -475,9 +455,7 @@ fun AccountLayout(
                 text = accountName,
                 style = typo.headlineMedium,
                 color = Color.White,
-                modifier =
-                Modifier
-                    .padding(start = 8.dp),
+                modifier = Modifier.padding(start = 8.dp),
             )
         }
     }
@@ -513,8 +491,7 @@ fun QuickPicks(
             text = stringResource(id = R.string.quick_picks),
             style = typo.headlineMedium,
             maxLines = 1,
-            modifier =
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 5.dp),
         )
@@ -565,8 +542,7 @@ fun MoodMomentAndGenre(
     val lazyListState2 = rememberLazyGridState()
 
     Column(
-        Modifier
-            .padding(vertical = 8.dp),
+        Modifier.padding(vertical = 8.dp),
     ) {
         Text(
             text = stringResource(id = R.string.let_s_pick_a_playlist_for_you),
@@ -576,8 +552,7 @@ fun MoodMomentAndGenre(
             text = stringResource(id = R.string.moods_amp_moment),
             style = typo.headlineMedium,
             maxLines = 1,
-            modifier =
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 5.dp),
         )
@@ -601,8 +576,7 @@ fun MoodMomentAndGenre(
             text = stringResource(id = R.string.genre),
             style = typo.headlineMedium,
             maxLines = 1,
-            modifier =
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 5.dp),
         )
@@ -635,8 +609,7 @@ fun ChartTitle() {
             text = stringResource(id = R.string.chart),
             style = typo.headlineMedium,
             maxLines = 1,
-            modifier =
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 5.dp),
         )
@@ -669,13 +642,11 @@ fun ChartData(
     val lazyListState3 = rememberLazyGridState()
     val snapperFlingBehavior3 = rememberSnapFlingBehavior(SnapLayoutInfoProvider(lazyGridState = lazyListState3))
 
-    Column(
-        Modifier.onGloballyPositioned { coordinates ->
-            with(density) {
-                gridWidthDp = (coordinates.size.width).toDp()
-            }
+    Column(Modifier.onGloballyPositioned { coordinates ->
+        with(density) {
+            gridWidthDp = (coordinates.size.width).toDp()
         }
-    ) {
+    }) {
         AnimatedVisibility(
             visible = !chart.songs.isNullOrEmpty(),
             enter = fadeIn(animationSpec = tween(2000)),
@@ -686,8 +657,7 @@ fun ChartData(
                     text = stringResource(id = R.string.top_tracks),
                     style = typo.headlineMedium,
                     maxLines = 1,
-                    modifier =
-                    Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp),
                 )
@@ -725,14 +695,12 @@ fun ChartData(
             text = stringResource(id = R.string.top_videos),
             style = typo.headlineMedium,
             maxLines = 1,
-            modifier =
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 10.dp),
         )
         LazyRow(
-            state = lazyListState,
-            flingBehavior = snapperFlingBehavior
+            state = lazyListState, flingBehavior = snapperFlingBehavior
         ) {
             items(chart.videos.items.size) {
                 val data = chart.videos.items[it]
@@ -763,8 +731,7 @@ fun ChartData(
             text = stringResource(id = R.string.top_artists),
             style = typo.headlineMedium,
             maxLines = 1,
-            modifier =
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 10.dp),
         )
@@ -788,8 +755,7 @@ fun ChartData(
                     text = stringResource(id = R.string.trending),
                     style = typo.headlineMedium,
                     maxLines = 1,
-                    modifier =
-                    Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp),
                 )

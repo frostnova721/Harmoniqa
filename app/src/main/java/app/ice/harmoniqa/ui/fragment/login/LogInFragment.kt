@@ -11,6 +11,7 @@ import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.annotation.OptIn
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -61,6 +62,7 @@ class LogInFragment : Fragment() {
         miniplayer.visibility = View.GONE
         binding.webView.apply {
             webViewClient = object : WebViewClient() {
+                @OptIn(UnstableApi::class)
                 @SuppressLint("FragmentLiveDataObserve")
                 override fun onPageFinished(view: WebView?, url: String?) {
                     if (url == Config.YOUTUBE_MUSIC_MAIN_URL) {
