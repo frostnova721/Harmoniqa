@@ -8,14 +8,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,13 +22,12 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,14 +45,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.ice.harmoniqa.R
 import app.ice.harmoniqa.common.QUALITY
 import app.ice.harmoniqa.extension.navigateSafe
 import app.ice.harmoniqa.ui.theme.md_theme_dark_background
-import app.ice.harmoniqa.ui.theme.md_theme_dark_primary
 import app.ice.harmoniqa.ui.theme.md_theme_dark_surface
 import app.ice.harmoniqa.utils.resString
 import app.ice.harmoniqa.viewModel.SettingsViewModel
@@ -87,16 +82,31 @@ fun SettingsScreen(
         }) {
             Text("Accounts")
             if (viewModel.loggedIn.collectAsState().value == "TRUE") {
-                val accounts = viewModel.googleAccounts.collectAsState().value
-                accounts?.forEach {
-                    AccountCard(
-                        username = it.name,
-                        emailId = it.email,
-                        img = it.thumbnailUrl,
-                        onLogout = {
-                            viewModel.logOutAllYouTube()
-                        }
-                    )
+                var calledGetAllAccounts by remember {
+                    mutableStateOf(false)
+                }
+                LaunchedEffect(key1 = calledGetAllAccounts) {
+                    if (!calledGetAllAccounts) {
+                        viewModel.getAllGoogleAccount()
+                        calledGetAllAccounts = true
+                    }
+                }
+                if (viewModel.loading.collectAsState().value) {
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth().padding(top = 25.dp, bottom = 15.dp)) {
+                        CircularProgressIndicator()
+                    }
+                } else {
+                    val accounts = viewModel.googleAccounts.collectAsState()
+                    accounts.value?.forEach {
+                        AccountCard(
+                            username = it.name,
+                            emailId = it.email,
+                            img = it.thumbnailUrl,
+                            onLogout = {
+                                viewModel.logOutAllYouTube()
+                            }
+                        )
+                    }
                 }
             } else {
                 Box(
@@ -111,7 +121,6 @@ fun SettingsScreen(
                 navController?.navigateSafe(R.id.action_global_logInFragment)
             })
         }
-
     }
 
     if (audioQualityDialogBoxState) {
@@ -227,7 +236,7 @@ private fun AccountCard(username: String, emailId: String, img: String, onLogout
             Column(
                 Modifier
                     .padding(start = 10.dp, end = 10.dp)
-                    .width(130.dp)
+                    .width(120.dp)
             ) {
                 Text(text = username, fontSize = MaterialTheme.typography.labelMedium.fontSize, overflow = TextOverflow.Ellipsis, maxLines = 2)
                 Text(text = emailId, fontSize = MaterialTheme.typography.bodySmall.fontSize, overflow = TextOverflow.Ellipsis, maxLines = 1)

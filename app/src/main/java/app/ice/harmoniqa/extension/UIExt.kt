@@ -385,36 +385,22 @@ fun ScrollState.isScrollingUp(): Boolean {
 
 @Composable
 fun LazyListState.isScrollingUp(): Boolean {
-    var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
-    var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
+    var previousIndex by remember { mutableIntStateOf(firstVisibleItemIndex) }
+    var previousOffset by remember { mutableIntStateOf(firstVisibleItemScrollOffset) }
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { layoutInfo.totalItemsCount }.collect {
-            Log.w("isScrollingUp", "firstVisibleItemIndex: $firstVisibleItemIndex")
-            previousIndex = firstVisibleItemIndex
-            previousScrollOffset = firstVisibleItemScrollOffset
-        }
-    }
-
-    return remember(this) {
+    return remember {
         derivedStateOf {
-//            Log.w("isScrollingUp", "offset: $firstVisibleItemScrollOffset")
-            if (firstVisibleItemIndex > 0)  {
-                if (previousIndex != firstVisibleItemIndex) {
-                    previousIndex > firstVisibleItemIndex
-                } else {
-                    previousScrollOffset >= firstVisibleItemScrollOffset
-                }.also {
-                    previousIndex = firstVisibleItemIndex
-                    previousScrollOffset = firstVisibleItemScrollOffset
-                }
+            val isScrollingUp = when {
+                firstVisibleItemIndex != previousIndex -> previousIndex > firstVisibleItemIndex
+                else -> previousOffset >= firstVisibleItemScrollOffset
             }
-            else {
-                true
-            }
+            previousIndex = firstVisibleItemIndex
+            previousOffset = firstVisibleItemScrollOffset
+            isScrollingUp
         }
     }.value
 }
+
 
 @Suppress("DEPRECATION")
 fun setStatusBarsColor(@ColorInt color: Int, activity: Activity) {

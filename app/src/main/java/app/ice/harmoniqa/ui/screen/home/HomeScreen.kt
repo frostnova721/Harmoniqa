@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -109,7 +110,7 @@ fun HomeScreen(
     navController: NavController,
 ) {
     val context = LocalContext.current
-    val scrollState = rememberScrollState()
+    val scrollState = rememberLazyListState()
     val accountInfo by viewModel.accountInfo.collectAsState()
     val homeData by viewModel.homeItemList.collectAsState()
     val newRelease by viewModel.newRelease.collectAsState()
@@ -148,9 +149,9 @@ fun HomeScreen(
         if (homeRefresh) {
             Log.w(
                 "HomeScreen",
-                "scrollState.firstVisibleItemIndex: ${scrollState.value}",
+                "scrollState.firstVisibleItemIndex: ${scrollState.firstVisibleItemIndex}",
             )
-            if (scrollState.value == 1) {
+            if (scrollState.firstVisibleItemIndex == 0) {
                 Log.w(
                     "HomeScreen",
                     "scrollState.canScrollBackward: ${scrollState.canScrollBackward}",
@@ -161,26 +162,21 @@ fun HomeScreen(
                     "HomeScreen",
                     "scrollState.canScrollBackward: ${scrollState.canScrollBackward}",
                 )
-                launch { scrollState.scrollTo(0) }
+                launch { scrollState.scrollToItem(0) }
                 sharedViewModel.homeRefreshDone()
             }
         }
     }
 
-    //returns boolean value to know whether to show app bar or not
-    @Composable
-    fun showAppBar(): Boolean {
-        return scrollState.isScrollingUp() || scrollState.value < 10;
-    }
-
     Column {
+        val shouldShowAppBar = scrollState.isScrollingUp()
         AnimatedVisibility(
-            visible = showAppBar(), enter = fadeIn() + expandVertically(), exit = fadeOut() + shrinkVertically()
+            visible = shouldShowAppBar, enter = fadeIn() + expandVertically(), exit = fadeOut() + shrinkVertically()
         ) {
             HomeTopAppBar(navController)
         }
         AnimatedVisibility(
-            visible = !showAppBar(), enter = fadeIn() + expandVertically(), exit = fadeOut() + shrinkVertically()
+            visible = !shouldShowAppBar, enter = fadeIn() + expandVertically(), exit = fadeOut() + shrinkVertically()
         ) {
             Spacer(
                 modifier = Modifier
@@ -245,122 +241,124 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(8.dp))
             Crossfade(targetState = loading, label = "Home Shimmer") { loading ->
                 if (!loading) {
-                    Column(
+                    LazyColumn(
+                        state = scrollState,
                         modifier = Modifier
                             .padding(horizontal = 15.dp)
-                            .verticalScroll(scrollState),
                     ) {
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = accountInfo != null && accountShow,
-                        ) {
-                            AccountLayout(
-                                accountName = accountInfo?.first ?: "",
-                                url = accountInfo?.second ?: "",
-                            )
-                        }
-
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = homeData.find {
-                                it.title == context.getString(
-                                    R.string.quick_picks,
+                        item {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = accountInfo != null && accountShow,
+                            ) {
+                                AccountLayout(
+                                    accountName = accountInfo?.first ?: "",
+                                    url = accountInfo?.second ?: "",
                                 )
-                            } != null,
-                        ) {
-                            QuickPicks(
-                                homeItem = homeData.find {
+                            }
+
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = homeData.find {
                                     it.title == context.getString(
                                         R.string.quick_picks,
                                     )
-                                } ?: return@AnimatedVisibility,
-                                sharedViewModel = sharedViewModel,
-                            )
-                        }
-
-                        for (homeItem in homeData) {
-                            if (homeItem.title != context.getString(R.string.quick_picks)) {
-                                HomeItem(
-                                    homeViewModel = viewModel,
-                                    sharedViewModel = sharedViewModel,
-                                    data = homeItem,
-                                    navController = navController,
-                                )
-                            }
-                        }
-                        for (it in newRelease) {
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = newRelease.isNotEmpty(),
+                                } != null,
                             ) {
-                                HomeItem(
-                                    homeViewModel = viewModel,
+                                QuickPicks(
+                                    homeItem = homeData.find {
+                                        it.title == context.getString(
+                                            R.string.quick_picks,
+                                        )
+                                    } ?: return@AnimatedVisibility,
                                     sharedViewModel = sharedViewModel,
-                                    data = it,
-                                    navController = navController,
                                 )
                             }
-                        }
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = moodMomentAndGenre != null,
-                        ) {
-                            moodMomentAndGenre?.let {
-                                MoodMomentAndGenre(
-                                    mood = it,
-                                    navController = navController,
-                                )
-                            }
-                        }
 
-                        Crossfade(targetState = chart == null && !chartLoading) { noData ->
-                            if (!noData) {
-                                Column(
-                                    Modifier.padding(vertical = 10.dp),
-                                    verticalArrangement = Arrangement.SpaceBetween,
+                            for (homeItem in homeData) {
+                                if (homeItem.title != context.getString(R.string.quick_picks)) {
+                                    HomeItem(
+                                        homeViewModel = viewModel,
+                                        sharedViewModel = sharedViewModel,
+                                        data = homeItem,
+                                        navController = navController,
+                                    )
+                                }
+                            }
+                            for (it in newRelease) {
+                                androidx.compose.animation.AnimatedVisibility(
+                                    visible = newRelease.isNotEmpty(),
                                 ) {
-                                    ChartTitle()
-                                    Spacer(modifier = Modifier.height(5.dp))
-                                    Crossfade(targetState = regionChart) { it ->
-                                        if (it != null) {
-                                            DropdownButton(
-                                                items = CHART_SUPPORTED_COUNTRY.itemsData.toList(),
-                                                defaultSelected = CHART_SUPPORTED_COUNTRY.itemsData.getOrNull(
-                                                    CHART_SUPPORTED_COUNTRY.items.indexOf(it),
-                                                ) ?: CHART_SUPPORTED_COUNTRY.itemsData[1],
-                                            ) {
-                                                viewModel.exploreChart(
-                                                    CHART_SUPPORTED_COUNTRY.items[
-                                                        CHART_SUPPORTED_COUNTRY.itemsData.indexOf(
-                                                            it,
-                                                        ),
-                                                    ],
-                                                )
+                                    HomeItem(
+                                        homeViewModel = viewModel,
+                                        sharedViewModel = sharedViewModel,
+                                        data = it,
+                                        navController = navController,
+                                    )
+                                }
+                            }
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = moodMomentAndGenre != null,
+                            ) {
+                                moodMomentAndGenre?.let {
+                                    MoodMomentAndGenre(
+                                        mood = it,
+                                        navController = navController,
+                                    )
+                                }
+                            }
+
+                            Crossfade(targetState = chart == null && !chartLoading) { noData ->
+                                if (!noData) {
+                                    Column(
+                                        Modifier.padding(vertical = 10.dp),
+                                        verticalArrangement = Arrangement.SpaceBetween,
+                                    ) {
+                                        ChartTitle()
+                                        Spacer(modifier = Modifier.height(5.dp))
+                                        Crossfade(targetState = regionChart) { it ->
+                                            if (it != null) {
+                                                DropdownButton(
+                                                    items = CHART_SUPPORTED_COUNTRY.itemsData.toList(),
+                                                    defaultSelected = CHART_SUPPORTED_COUNTRY.itemsData.getOrNull(
+                                                        CHART_SUPPORTED_COUNTRY.items.indexOf(it),
+                                                    ) ?: CHART_SUPPORTED_COUNTRY.itemsData[1],
+                                                ) {
+                                                    viewModel.exploreChart(
+                                                        CHART_SUPPORTED_COUNTRY.items[
+                                                            CHART_SUPPORTED_COUNTRY.itemsData.indexOf(
+                                                                it,
+                                                            ),
+                                                        ],
+                                                    )
+                                                }
                                             }
                                         }
-                                    }
-                                    Spacer(modifier = Modifier.height(5.dp))
-                                    Crossfade(
-                                        targetState = chartLoading,
-                                        label = "Chart",
-                                    ) { loading ->
-                                        if (!loading) {
-                                            chart?.let {
-                                                ChartData(
-                                                    chart = it,
-                                                    sharedViewModel = sharedViewModel,
-                                                    navController = navController,
-                                                    context = context,
+                                        Spacer(modifier = Modifier.height(5.dp))
+                                        Crossfade(
+                                            targetState = chartLoading,
+                                            label = "Chart",
+                                        ) { loading ->
+                                            if (!loading) {
+                                                chart?.let {
+                                                    ChartData(
+                                                        chart = it,
+                                                        sharedViewModel = sharedViewModel,
+                                                        navController = navController,
+                                                        context = context,
+                                                    )
+                                                }
+                                            } else {
+                                                CenterLoadingBox(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(400.dp),
                                                 )
                                             }
-                                        } else {
-                                            CenterLoadingBox(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .height(400.dp),
-                                            )
                                         }
                                     }
                                 }
                             }
+                            EndOfPage()
                         }
-                        EndOfPage()
                     }
                 } else {
                     HomeShimmer()

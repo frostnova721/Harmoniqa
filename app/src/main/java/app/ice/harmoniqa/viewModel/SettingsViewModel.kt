@@ -692,6 +692,10 @@ class SettingsViewModel(
         }
     }
 
+    fun logoutYoutube(accountName: String) {
+        //TODO:write function to logout one account
+    }
+
     fun logOutAllYouTube() {
         viewModelScope.launch {
             googleAccounts.value?.forEach { account ->

@@ -790,7 +790,7 @@ class Ytmusic {
         }
 
     suspend fun checkForUpdate() =
-        httpClient.get("https://api.github.com/repos/maxrave-dev/SimpMusic/releases/latest") {
+        httpClient.get("https://api.github.com/repos/frostnova721/harmoniqa/releases/latest") {
             contentType(ContentType.Application.Json)
         }
 

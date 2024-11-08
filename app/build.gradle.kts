@@ -246,6 +246,8 @@ dependencies {
     // Coil
     implementation(libs.coil)
     implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
+
     // Easy Permissions
     implementation(libs.easypermissions)
     // Palette Color
