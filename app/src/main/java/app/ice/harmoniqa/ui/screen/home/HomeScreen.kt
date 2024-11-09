@@ -12,6 +12,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.horizontalScroll
@@ -37,9 +38,12 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -50,6 +54,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -64,6 +69,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.ice.harmoniqa.R
@@ -92,10 +98,12 @@ import app.ice.harmoniqa.ui.component.MoodMomentAndGenreHomeItem
 import app.ice.harmoniqa.ui.component.QuickPicksItem
 import app.ice.harmoniqa.ui.component.RippleIconButton
 import app.ice.harmoniqa.ui.theme.typo
+import app.ice.harmoniqa.utils.resString
 import app.ice.harmoniqa.viewModel.HomeViewModel
 import app.ice.harmoniqa.viewModel.SharedViewModel
 import coil.compose.AsyncImage
 import com.maxrave.kotlinytmusicscraper.config.Constants
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -121,11 +129,9 @@ fun HomeScreen(
     var accountShow by rememberSaveable {
         mutableStateOf(false)
     }
-    val regionChart by  viewModel.regionCodeChart.collectAsState()
+    val regionChart by viewModel.regionCodeChart.collectAsState()
     val homeRefresh by sharedViewModel.homeRefresh.collectAsState()
-    val pullToRefreshState = rememberPullToRefreshState(
-        70.dp
-    )
+    val pullToRefreshState = rememberPullToRefreshState()
     val chipRowState = rememberScrollState()
     val params by viewModel.params.collectAsState()
     val scaleFraction = if (pullToRefreshState.isRefreshing) {
@@ -133,37 +139,71 @@ fun HomeScreen(
     } else {
         LinearOutSlowInEasing.transform(pullToRefreshState.progress).coerceIn(0f, 1f)
     }
-    if (pullToRefreshState.isRefreshing) {
+    var isRefreshing by remember {
+        mutableStateOf(false)
+    }
+
+    val cosco = rememberCoroutineScope()
+
+    var didShowNotLoggedInDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val onRefresh: () -> Unit = {
+        isRefreshing = true
         viewModel.getHomeItemList()
-        viewModel.getHomeItemList()
+        Log.w("HomeScreen", "onRefresh")
+    }
+
+    LaunchedEffect(key1 = loading) {
         if (!loading) {
-            pullToRefreshState.endRefresh()
+            isRefreshing = false
             sharedViewModel.homeRefreshDone()
+            cosco.launch {
+                pullToRefreshState.endRefresh()
+            }
         }
     }
+
     LaunchedEffect(key1 = homeData) {
         accountShow = homeData.find { it.subtitle == accountInfo?.first } == null
     }
+
     LaunchedEffect(key1 = homeRefresh) {
         Log.w("HomeScreen", "homeRefresh: $homeRefresh")
         if (homeRefresh) {
-            Log.w(
-                "HomeScreen",
-                "scrollState.firstVisibleItemIndex: ${scrollState.firstVisibleItemIndex}",
-            )
-            if (scrollState.firstVisibleItemIndex == 0) {
-                Log.w(
-                    "HomeScreen",
-                    "scrollState.canScrollBackward: ${scrollState.canScrollBackward}",
-                )
-                pullToRefreshState.startRefresh()
-            } else {
-                Log.w(
-                    "HomeScreen",
-                    "scrollState.canScrollBackward: ${scrollState.canScrollBackward}",
-                )
-                launch { scrollState.scrollToItem(0) }
+            if (scrollState.firstVisibleItemIndex > 1) {
+                Log.w("HomeScreen", "scrollState.firstVisibleItemIndex: ${scrollState.firstVisibleItemIndex}")
+                scrollState.animateScrollToItem(0)
                 sharedViewModel.homeRefreshDone()
+            } else {
+                Log.w("HomeScreen", "scrollState.firstVisibleItemIndex: ${scrollState.firstVisibleItemIndex}")
+                onRefresh.invoke()
+            }
+        }
+    }
+
+    if (!viewModel.isUserLoggedIn.collectAsState().value && !didShowNotLoggedInDialog) {
+        Dialog(onDismissRequest = { didShowNotLoggedInDialog = true }) {
+            Column(modifier = Modifier
+                .clip(RoundedCornerShape(15.dp))
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .padding(16.dp)) {
+                Text("Login!", fontSize = MaterialTheme.typography.bodyLarge.fontSize, modifier = Modifier.padding(bottom = 16.dp))
+                Text("The player may not work without logging in to google account!", fontSize = MaterialTheme.typography.labelMedium.fontSize)
+                Row(horizontalArrangement = Arrangement.End, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp)) {
+                    TextButton(onClick = { didShowNotLoggedInDialog = true }) {
+                        Text(text = resString(resId = (R.string.cancel)))
+                    }
+                    TextButton(onClick = {
+                        didShowNotLoggedInDialog = true
+                        navController.navigateSafe(R.id.action_global_logInFragment)
+                    }) {
+                        Text(resString(resId = R.string.log_in))
+                    }
+                }
             }
         }
     }

@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.android.annotation.KoinViewModel
@@ -80,7 +81,15 @@ class HomeViewModel(
     private var _params: MutableStateFlow<String?> = MutableStateFlow(null)
     val params: StateFlow<String?> = _params
 
+    private val _isUserLoggedIn = MutableStateFlow<Boolean>(true)
+    var isUserLoggedIn = _isUserLoggedIn
+
     init {
+        //check if the cookie for the account exists
+        if (runBlocking{ dataStoreManager.cookie.first() }.isEmpty()) {
+            _isUserLoggedIn.update { false }
+        }
+
         homeJob = Job()
         viewModelScope.launch {
             regionCodeChart.value = dataStoreManager.chartKey.first()
