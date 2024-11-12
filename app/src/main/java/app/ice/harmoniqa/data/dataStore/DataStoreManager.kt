@@ -191,7 +191,7 @@ class DataStoreManager(private val settingsDataStore: DataStore<Preferences>) {
 
         val saveRecentSongAndQueue: Flow<String> =
             settingsDataStore.data.map { preferences ->
-                preferences[SAVE_RECENT_SONG] ?: FALSE
+                preferences[SAVE_RECENT_SONG] ?: TRUE
             }
 
         suspend fun setSaveRecentSongAndQueue(save: Boolean) {

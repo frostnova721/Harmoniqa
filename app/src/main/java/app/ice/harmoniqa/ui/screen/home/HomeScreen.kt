@@ -189,7 +189,7 @@ fun HomeScreen(
                 .clip(RoundedCornerShape(15.dp))
                 .background(MaterialTheme.colorScheme.secondaryContainer)
                 .padding(16.dp)) {
-                Text("Login!", fontSize = MaterialTheme.typography.bodyLarge.fontSize, modifier = Modifier.padding(bottom = 16.dp))
+                Text("Login!", fontSize = MaterialTheme.typography.titleLarge.fontSize, modifier = Modifier.padding(bottom = 16.dp))
                 Text("The player may not work without logging in to google account!", fontSize = MaterialTheme.typography.labelMedium.fontSize)
                 Row(horizontalArrangement = Arrangement.End, modifier = Modifier
                     .fillMaxWidth()

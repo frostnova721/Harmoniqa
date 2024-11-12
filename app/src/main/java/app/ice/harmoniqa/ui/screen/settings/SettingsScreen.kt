@@ -8,11 +8,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
@@ -49,6 +53,9 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.ice.harmoniqa.R
 import app.ice.harmoniqa.common.QUALITY
+import app.ice.harmoniqa.common.SUPPORTED_LANGUAGE
+import app.ice.harmoniqa.common.SUPPORTED_LOCATION
+import app.ice.harmoniqa.common.VIDEO_QUALITY
 import app.ice.harmoniqa.extension.navigateSafe
 import app.ice.harmoniqa.ui.theme.md_theme_dark_background
 import app.ice.harmoniqa.ui.theme.md_theme_dark_surface
@@ -73,6 +80,15 @@ fun SettingsScreen(
     var audioQualityDialogBoxState by remember {
         mutableStateOf(false)
     }
+    var videoQualityDialogBoxState by remember {
+        mutableStateOf(false)
+    }
+    var languageDialogBoxState by remember {
+        mutableStateOf(false)
+    }
+    var contentCountryDialogBoxState by remember {
+        mutableStateOf(false)
+    }
 
     val context = LocalContext.current
 
@@ -92,7 +108,11 @@ fun SettingsScreen(
                     }
                 }
                 if (viewModel.loading.collectAsState().value) {
-                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth().padding(top = 25.dp, bottom = 15.dp)) {
+                    Box(
+                        contentAlignment = Alignment.Center, modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 25.dp, bottom = 15.dp)
+                    ) {
                         CircularProgressIndicator()
                     }
                 } else {
@@ -123,6 +143,25 @@ fun SettingsScreen(
         }
     }
 
+    if (videoQualityDialogBoxState) {
+        DialogBox(onDismiss = { videoQualityDialogBoxState = false }) {
+            Text(text = resString(resId = R.string.video_quality), modifier = Modifier.padding(bottom = 10.dp))
+            VIDEO_QUALITY.items.forEachIndexed { ind, it ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable { viewModel.changeVideoQuality(ind) }) {
+                    RadioButton(
+                        selected = it.toString() == viewModel.videoQuality.collectAsState().value,
+                        onClick = { viewModel.changeVideoQuality(ind) })
+                    Text(text = it.toString(), fontSize = MaterialTheme.typography.labelMedium.fontSize)
+                }
+            }
+        }
+    }
+
     if (audioQualityDialogBoxState) {
         DialogBox(onDismiss = { audioQualityDialogBoxState = false }) {
             Text(text = resString(resId = R.string.audio_quality), modifier = Modifier.padding(bottom = 10.dp))
@@ -140,6 +179,84 @@ fun SettingsScreen(
         }
     }
 
+    if (contentCountryDialogBoxState) {
+        DialogBox(onDismiss = { contentCountryDialogBoxState = false }) {
+            var selectedCountry by remember {
+                mutableStateOf(viewModel.location.value)
+            }
+            Text(text = resString(resId = R.string.language), modifier = Modifier.padding(bottom = 15.dp))
+            Column(
+                Modifier
+                    .height(300.dp)
+                    .verticalScroll(rememberScrollState())) {
+
+                SUPPORTED_LOCATION.items.forEachIndexed { ind, it ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable { selectedCountry = SUPPORTED_LOCATION.items[ind].toString() }) {
+                        RadioButton(
+                            selected = SUPPORTED_LOCATION.items[ind].toString() == selectedCountry,
+                            onClick = { selectedCountry = SUPPORTED_LOCATION.items[ind].toString() })
+                        Text(text = it.toString(), fontSize = MaterialTheme.typography.labelMedium.fontSize)
+                    }
+                }
+            }
+            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                TextButton(onClick = { contentCountryDialogBoxState = false }) {
+                    Text(resString(resId = R.string.cancel))
+                }
+                TextButton(onClick = { viewModel.changeLocation(selectedCountry ?: "US")
+                    contentCountryDialogBoxState = false
+                }) {
+                    Text(text = resString(resId = R.string.change))
+                }
+            }
+        }
+    }
+
+    if (languageDialogBoxState) {
+        DialogBox(onDismiss = { languageDialogBoxState = false }) {
+            var selectedLanguage by remember {
+                mutableStateOf(viewModel.language.value)
+            }
+            Text(text = resString(resId = R.string.language), modifier = Modifier.padding(bottom = 15.dp))
+            Column(
+                Modifier
+                    .height(300.dp)
+                    .verticalScroll(rememberScrollState())) {
+
+                SUPPORTED_LANGUAGE.items.forEachIndexed { ind, it ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable { selectedLanguage = SUPPORTED_LANGUAGE.codes[ind] }) {
+                        RadioButton(
+                            selected = SUPPORTED_LANGUAGE.codes[ind] == selectedLanguage,
+                            onClick = { selectedLanguage = SUPPORTED_LANGUAGE.codes[ind] })
+                        Text(text = it.toString(), fontSize = MaterialTheme.typography.labelMedium.fontSize)
+                    }
+                }
+            }
+            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                TextButton(onClick = { languageDialogBoxState = false }) {
+                    Text(resString(resId = R.string.cancel))
+                }
+                TextButton(onClick = { viewModel.changeLanguage(selectedLanguage ?: "en-us")
+                languageDialogBoxState = false
+                }) {
+                    Text(text = resString(resId = R.string.change))
+                }
+            }
+        }
+    }
+
+
+    //app screen
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -156,7 +273,7 @@ fun SettingsScreen(
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            Column {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
                 CategoryTitle(title = resString(R.string.user_interface))
                 ToggleSettingItem(title = resString(resId = R.string.translucent_bottom_navigation_bar),
                     value = viewModel.translucentBottomBar.collectAsState().value == "TRUE",
@@ -170,11 +287,15 @@ fun SettingsScreen(
                     onClick = {
                         ytaccountDialogBoxState = true
                     })
-                ClickableItems(title = resString(resId = R.string.language), description = viewModel.language.collectAsState().value, onClick = {})
+                ClickableItems(title = resString(resId = R.string.language), description = viewModel.language.collectAsState().value, onClick = {
+                    languageDialogBoxState = true
+                })
                 ClickableItems(
                     title = resString(resId = R.string.content_country),
                     description = viewModel.location.collectAsState().value,
-                    onClick = {})
+                    onClick = {
+                        contentCountryDialogBoxState = true
+                    })
                 ClickableItems(
                     title = resString(resId = R.string.audio_quality),
                     description = viewModel.quality.collectAsState().value,
@@ -185,6 +306,41 @@ fun SettingsScreen(
                     title = resString(resId = R.string.play_video_for_video_track_instead_of_audio_only),
                     value = viewModel.playVideoInsteadOfAudio.collectAsState().value == "TRUE",
                     onChange = { value -> viewModel.setPlayVideoInsteadOfAudio(value) })
+                if (viewModel.playVideoInsteadOfAudio.collectAsState().value == "TRUE") {
+                    ClickableItems(
+                        title = resString(resId = R.string.video_quality),
+                        description = viewModel.videoQuality.collectAsState().value,
+                        onClick = { videoQualityDialogBoxState = true })
+                }
+                ToggleSettingItem(
+                    title =
+                    resString(resId = R.string.send_back_listening_data_to_google),
+                    value = viewModel.sendBackToGoogle.collectAsState().value == "TRUE",
+                    description = "Improves recommendations"
+                ) {
+                    viewModel.setSendBackToGoogle(it)
+                }
+                CategoryTitle(title = resString(resId = R.string.playback))
+                ToggleSettingItem(title = resString(resId = R.string.save_last_played),
+                    value = viewModel.saveRecentSongAndQueue.collectAsState().value == "TRUE",
+                    description = resString(
+                        resId = R.string.save_last_played_track_and_queue,
+                    ),
+                    onChange = {
+                        viewModel.setSaveLastPlayed(it)
+                    })
+                ToggleSettingItem(
+                    title = resString(resId = R.string.save_playback_state),
+                    value = viewModel.savedPlaybackState.collectAsState().value == "TRUE",
+                    description = resString(resId = R.string.save_shuffle_and_repeat_mode),
+                    onChange = {
+                        viewModel.setSavedPlaybackState(it)
+                    })
+                CategoryTitle(title = resString(resId = R.string.audio))
+                ToggleSettingItem(title = resString(resId = R.string.normalize_volume), value = viewModel.normalizeVolume.collectAsState().value == "TRUE", onChange = {
+                    viewModel.setNormalizeVolume(it)
+                })
+                Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
             }
         }
     }
@@ -275,9 +431,9 @@ fun ToggleSettingItem(title: String, description: String? = null, value: Boolean
         .padding(start = 25.dp, end = 20.dp, top = 7.dp, bottom = 7.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
             Column {
-                Text(title, maxLines = 2, modifier = Modifier.width(275.dp))
+                Text(title, maxLines = 2, modifier = Modifier.width(275.dp), fontSize = MaterialTheme.typography.labelMedium.fontSize)
                 if (description != null)
-                    Text(text = description)
+                    Text(text = description, fontSize = 14.sp, color = MaterialTheme.colorScheme.outline)
             }
             Switch(
                 checked = value, onCheckedChange = onChange, colors = SwitchDefaults.colors(

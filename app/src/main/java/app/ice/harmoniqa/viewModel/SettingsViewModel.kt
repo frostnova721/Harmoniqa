@@ -136,6 +136,7 @@ class SettingsViewModel(
                 when (videoQuality) {
                     VIDEO_QUALITY.items[0].toString() -> _videoQuality.emit(VIDEO_QUALITY.items[0].toString())
                     VIDEO_QUALITY.items[1].toString() -> _videoQuality.emit(VIDEO_QUALITY.items[1].toString())
+                    VIDEO_QUALITY.items[2].toString() -> _videoQuality.emit(VIDEO_QUALITY.items[2].toString())
                 }
             }
         }
@@ -317,6 +318,7 @@ class SettingsViewModel(
             when (checkedIndex) {
                 0 -> dataStoreManager.setVideoQuality(VIDEO_QUALITY.items[0].toString())
                 1 -> dataStoreManager.setVideoQuality(VIDEO_QUALITY.items[1].toString())
+                2 -> dataStoreManager.setVideoQuality(VIDEO_QUALITY.items[2].toString())
             }
             getVideoQuality()
         }

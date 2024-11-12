@@ -170,9 +170,9 @@ fun NowPlayingScreen(
 
     val shouldShowVideo by sharedViewModel.getVideo.collectAsState()
 
-    LaunchedEffect(key1 = timelineState) {
-        Log.w(TAG, "Loading: ${timelineState.loading}")
-    }
+//    LaunchedEffect(key1 = timelineState) {
+//        Log.w(TAG, "Loading: ${timelineState.loading}")
+//    }
 
     //State
     val mainScrollState = rememberScrollState()
@@ -1462,11 +1462,11 @@ fun NowPlayingScreen(
     }
 }
 
-@UnstableApi
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, device = "spec:width=1080px,height=5000px,dpi=440")
-@Composable
-fun NowPlayingScreenPreview() {
-    AppTheme {
-//        NowPlayingScreen()
-    }
-}
+//@UnstableApi
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, device = "spec:width=1080px,height=5000px,dpi=440")
+//@Composable
+//fun NowPlayingScreenPreview() {
+//    AppTheme {
+////        NowPlayingScreen()
+//    }
+//}
