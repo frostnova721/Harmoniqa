@@ -35,6 +35,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -185,15 +186,19 @@ fun HomeScreen(
 
     if (!viewModel.isUserLoggedIn.collectAsState().value && !didShowNotLoggedInDialog) {
         Dialog(onDismissRequest = { didShowNotLoggedInDialog = true }) {
-            Column(modifier = Modifier
-                .clip(RoundedCornerShape(15.dp))
-                .background(MaterialTheme.colorScheme.secondaryContainer)
-                .padding(16.dp)) {
+            Column(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                    .padding(16.dp)
+            ) {
                 Text("Login!", fontSize = MaterialTheme.typography.titleLarge.fontSize, modifier = Modifier.padding(bottom = 16.dp))
                 Text("The player may not work without logging in to google account!", fontSize = MaterialTheme.typography.labelMedium.fontSize)
-                Row(horizontalArrangement = Arrangement.End, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.End, modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)
+                ) {
                     TextButton(onClick = { didShowNotLoggedInDialog = true }) {
                         Text(text = resString(resId = (R.string.cancel)))
                     }
@@ -282,9 +287,7 @@ fun HomeScreen(
             Crossfade(targetState = loading, label = "Home Shimmer") { loading ->
                 if (!loading) {
                     LazyColumn(
-                        state = scrollState,
-                        modifier = Modifier
-                            .padding(horizontal = 15.dp)
+                        state = scrollState, modifier = Modifier.padding(horizontal = 15.dp)
                     ) {
                         item {
                             androidx.compose.animation.AnimatedVisibility(
@@ -295,6 +298,8 @@ fun HomeScreen(
                                     url = accountInfo?.second ?: "",
                                 )
                             }
+                        }
+                        item {
 
                             androidx.compose.animation.AnimatedVisibility(
                                 visible = homeData.find {
@@ -312,29 +317,33 @@ fun HomeScreen(
                                     sharedViewModel = sharedViewModel,
                                 )
                             }
+                        }
 
-                            for (homeItem in homeData) {
-                                if (homeItem.title != context.getString(R.string.quick_picks)) {
-                                    HomeItem(
-                                        homeViewModel = viewModel,
-                                        sharedViewModel = sharedViewModel,
-                                        data = homeItem,
-                                        navController = navController,
-                                    )
-                                }
+                        items(homeData) { homeItem ->
+                            if (homeItem.title != context.getString(R.string.quick_picks)) {
+                                HomeItem(
+                                    homeViewModel = viewModel,
+                                    sharedViewModel = sharedViewModel,
+                                    data = homeItem,
+                                    navController = navController,
+                                )
                             }
-                            for (it in newRelease) {
-                                androidx.compose.animation.AnimatedVisibility(
-                                    visible = newRelease.isNotEmpty(),
-                                ) {
-                                    HomeItem(
-                                        homeViewModel = viewModel,
-                                        sharedViewModel = sharedViewModel,
-                                        data = it,
-                                        navController = navController,
-                                    )
-                                }
+                        }
+
+                        items(newRelease) {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = newRelease.isNotEmpty(),
+                            ) {
+                                HomeItem(
+                                    homeViewModel = viewModel,
+                                    sharedViewModel = sharedViewModel,
+                                    data = it,
+                                    navController = navController,
+                                )
                             }
+
+                        }
+                        item {
                             androidx.compose.animation.AnimatedVisibility(
                                 visible = moodMomentAndGenre != null,
                             ) {
@@ -345,7 +354,8 @@ fun HomeScreen(
                                     )
                                 }
                             }
-
+                        }
+                        item {
                             Crossfade(targetState = chart == null && !chartLoading) { noData ->
                                 if (!noData) {
                                     Column(
